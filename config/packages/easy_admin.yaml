@@ -1,0 +1,27 @@
+easy_admin:
+    site_name: Noha Admin
+    design:
+      menu:
+        - {entity: 'Pedido', label: 'Pedidos', icon: 'piggy-bank' }
+        - {entity: 'Cliente', label: 'Clientes', icon: 'users' }
+        - {entity: 'Producto', label: 'Combos', icon: 'donate' }
+        - {entity: 'EstadoPedido', label: 'Estados de pedidos', icon: 'cog' }
+        - {entity: 'PeriodoEntrega', label: 'Periodos de entrega', icon: 'cog' }
+    entities:
+        # List the entity class name you want to manage
+        
+        Pedido:
+          class: App\Entity\Pedido
+          
+        
+        Cliente:
+          class: App\Entity\Cliente
+
+        Producto:
+          class: App\Entity\Producto
+
+        EstadoPedido:
+          class: App\Entity\EstadoPedido
+
+        PeriodoEntrega:
+          class: App\Entity\EstadoPedido
