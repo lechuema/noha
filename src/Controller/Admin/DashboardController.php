@@ -41,6 +41,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linktoCrud('Combos', 'fa fa-lightbulb-o',Producto::class);
         yield MenuItem::linktoCrud('Horarios entrega', 'fa fa-cog fa-fw',PeriodoEntrega::class);
         yield MenuItem::linktoCrud('Estados de pedido', 'fa fa-cog fa-fw',EstadoPedido::class);
+
         
     }
 }

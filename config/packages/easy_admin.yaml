@@ -7,6 +7,7 @@ easy_admin:
         - {entity: 'Producto', label: 'Combos', icon: 'donate' }
         - {entity: 'EstadoPedido', label: 'Estados de pedidos', icon: 'cog' }
         - {entity: 'PeriodoEntrega', label: 'Periodos de entrega', icon: 'cog' }
+        - {entity: 'Admin', label: 'Usuarios del sistema', icon: 'cog' }
     entities:
         # List the entity class name you want to manage
         
@@ -25,3 +26,6 @@ easy_admin:
 
         PeriodoEntrega:
           class: App\Entity\EstadoPedido
+
+        Admin:
+          class: App\Entity\Admin

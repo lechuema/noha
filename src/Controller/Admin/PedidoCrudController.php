@@ -48,16 +48,13 @@ class PedidoCrudController extends AbstractCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return $crud
+        return Crud::new()
 
 
-            // defines the initial sorting applied to the list of entities
-            // (user can later change this sorting by clicking on the table columns)
-            ->setDefaultSort(['fechaEntrega' => 'DESC'])
+            ->overrideTemplates([
 
-            // the max number of entities to display per page
-            ->setPaginatorPageSize(30)
-
+                'crud/new' => 'custom_fields/productos.html.twig',
+            ])
             ;
     }
 
@@ -76,7 +73,9 @@ class PedidoCrudController extends AbstractCrudController
         //$cliente=AssociationField::new('cliente')->setTemplatePath('custom_fields/cliente.html.twig');
         $cliente = AssociationField::new('cliente')->autocomplete();
         //$productos=AssociationField::new('productos')->setTemplatePath('custom_fields/productos.html.twig');
-        $productos = AssociationField::new('productos')->setCssClass('productoClass')->setTemplatePath('custom_fields/productos.html.twig');
+        $productos = AssociationField::new('productos')->setFormTypeOptions([
+            'block_name' => 'custom_producto',
+        ]);;
         $observaciones = TextEditorField::new('observaciones');
         $precioTotal = NumberField::new('precioTotal')->setFormTypeOption('disabled', 'disabled');
         $fechaEntrega = DateTimeField::new('fechaEntrega');
