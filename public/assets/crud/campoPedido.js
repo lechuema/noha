@@ -1,10 +1,12 @@
+document.getElementById('Pedido_productos').addEventListener('change', function (e) {
+    combo=document.getElementById('Pedido_productos');
+
+    console.log(combo);
+});
 
 
-    function actualizarPrecio(){
 
-    /*var precio=$('#id_campo_producto').val();
-    var valor_total=$('#id_campo_precio_total').val();
-    $('#id_campo_precio_total').val(valor_total+precio);*/
-alert('hola');
+function prueba(prueductos)
+{
+    console.log(productos);
 }
-

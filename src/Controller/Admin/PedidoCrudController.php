@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Pedido;
+use Doctrine\Common\Collections\ArrayCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -92,7 +93,7 @@ class PedidoCrudController extends AbstractCrudController
             }
             case Crud::PAGE_NEW:
             {
-                return [$cliente, $productos, $precioTotal, $observaciones, $fechaEntrega, $fechaRealizacion, $retira];
+                return [$cliente, $productos, $precioTotal, $estadoPedido, $observaciones, $fechaEntrega, $fechaRealizacion, $retira];
                 break;
             }
             case Crud::PAGE_EDIT:
@@ -102,12 +103,20 @@ class PedidoCrudController extends AbstractCrudController
             }
             case Crud::PAGE_DETAIL:
             {
-                return [$cliente, $productos, $observaciones, $precioTotal, $fechaEntrega, $fechaRealizacion, $retira];
+                return [$cliente, $productos, $observaciones, $precioTotal, $estadoPedido, $fechaEntrega, $fechaRealizacion, $retira];
                 break;
             }
         }
 
 
     }
-    
+
+   /* public function createEntity(string $entityFqcn)
+    {
+        $pedido = new Pedido();
+        $pedido->setEstadoPedido(new EstadoPedido());
+        $pedido->set($this->getUser())
+
+        return $article;
+    }*/
 }

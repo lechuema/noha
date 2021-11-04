@@ -1,13 +1,28 @@
 {% extends '@!EasyAdmin/crud/new.html.twig' %}
 
-{% block choice_widget_collapsed %}
-    {% if 'ea-autocomplete' == attr['data-ea-widget']|default(false) %}
-        {% set attr = attr|merge({
-            'data-ea-i18n-no-results-found': 'autocomplete.no-results-found'|trans({}, 'EasyAdminBundle'),
-            'data-ea-i18n-no-more-results': 'autocomplete.no-more-results'|trans({}, 'EasyAdminBundle'),
-            'data-ea-i18n-loading-more-results': 'autocomplete.loading-more-results'|trans({}, 'EasyAdminBundle'),
-        }) %}
-    {% endif %}
-    <p>hola</p>
-    {{ parent() }}
-{% endblock choice_widget_collapsed %}
+{% block main %}
+
+
+    {{ form_start(new_form) }}
+
+
+    <div class="row">
+        <div class="col">
+            {{ form_widget(new_form.productos) }}
+            <button onclick="prueba(new_form.productos)">boton</button>
+        </div>
+
+
+
+
+
+    </div>
+    {{ form_end(new_form) }}
+
+
+
+
+
+
+{% endblock %}
+
