@@ -98,6 +98,18 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "friendsofsymfony/jsrouting-bundle": {
+        "version": "2.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.3",
+            "ref": "a9f2e49180f75cdc71ae279a929c4b2e0638de84"
+        },
+        "files": [
+            "config/routes/fos_js_routing.yaml"
+        ]
+    },
     "laminas/laminas-code": {
         "version": "3.4.1"
     },
@@ -354,6 +366,9 @@
     "symfony/security-http": {
         "version": "v5.2.12"
     },
+    "symfony/serializer": {
+        "version": "v5.2.12"
+    },
     "symfony/service-contracts": {
         "version": "v2.4.0"
     },
@@ -449,5 +464,8 @@
     },
     "twig/twig": {
         "version": "v3.3.3"
+    },
+    "willdurand/jsonp-callback-validator": {
+        "version": "v1.1.0"
     }
 }

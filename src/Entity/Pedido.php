@@ -93,6 +93,7 @@ class Pedido
 
     public function getFechaRealizacion(): ?\DateTimeInterface
     {
+        $this->fechaRealizacion= new \DateTime();
         return $this->fechaRealizacion;
     }
 
@@ -162,6 +163,13 @@ class Pedido
 
         return $this;
     }
+
+
+    public $mailCliente;
+    public $telefonoCliente;
+    public $nombreCliente;
+    public $apellidoCliente;
+    public $direccionCliente;
 
     /**
      * @return Collection|Producto[]

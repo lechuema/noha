@@ -55,7 +55,7 @@ class Cliente
     }
 
     public function __toString(){
-        return $this->apellido.' - '.$this->mail;
+        return $this->telefono.' '.$this->getApellido().' '.$this->getNombre();
     }
 
     public function getId(): ?int
@@ -122,6 +122,10 @@ class Cliente
 
         return $this;
     }
+
+
+
+
 
     /**
      * @return Collection|Pedido[]

@@ -1,12 +1,42 @@
-document.getElementById('Pedido_productos').addEventListener('change', function (e) {
-    combo=document.getElementById('Pedido_productos');
-
-    console.log(combo);
-});
 
 
+document.getElementById('Pedido_productos').addEventListener('change', updateValue);
 
-function prueba(prueductos)
-{
-    console.log(productos);
+function updateValue() {
+   precioPedido=0;
+   comboProductos=document.getElementById('Pedido_productos-ts-control');
+   for (let i = 0; i < comboProductos.childNodes.length-1; i++) {
+      var arrayDeCadenas = comboProductos.childNodes[i].textContent.split('|');
+      precioPedido=precioPedido+parseInt(arrayDeCadenas[1].substr(0,arrayDeCadenas[1].length-1));
+   }
+   editPrecioTotal=document.getElementById('Pedido_precioTotal');
+   editPrecioTotal.value="";
+   editPrecioTotal.value=precioPedido;
+}
+
+
+document.getElementById('Pedido_cliente_autocomplete').addEventListener('change', buscarCliente);
+function buscarCliente(){
+  // var Ruta=Routing.generate('buscarCliente');
+   comboCliente=document.getElementById('Pedido_cliente_autocomplete');
+   var selectedOption = this.options[comboCliente.selectedIndex];
+   console.log(selectedOption.value + ': ' + selectedOption.text);
+
+   var parametros = {'id' : selectedOption.value};
+
+   $.ajax({
+      data: { 'id' :selectedOption.value  },
+      url: 'buscarCliente',
+      type: 'post',
+      success: function (data) {
+         document.getElementById('Pedido_telefonoCliente').value=data['telefonoCliente'];
+         document.getElementById('Pedido_nombreCliente').value=data['nombreCliente'];
+         document.getElementById('Pedido_apellidoCliente').value=data['apellidoCliente'];
+         document.getElementById('Pedido_mailCliente').value=data['mailCliente'];
+         document.getElementById('Pedido_direccionCliente').value=data['direccionCliente'];
+         },
+      error: function(){
+         alert("Error petición ajax");
+      }
+   })
 }

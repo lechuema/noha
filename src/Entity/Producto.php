@@ -40,7 +40,7 @@ class Producto
     }
 
     public function __toString(){
-        return $this->descripcion;
+        return $this->descripcion.'|'.$this->precioActual;
     }
 
 
