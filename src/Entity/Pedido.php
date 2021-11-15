@@ -166,10 +166,32 @@ class Pedido
 
 
     public $mailCliente;
+    public function getMailCliente(): ?string
+    {
+        return $this->mailCliente;
+    }
     public $telefonoCliente;
+    public function getTelefonoCliente(): ?string
+    {
+        return $this->telefonoCliente;
+    }
     public $nombreCliente;
+    public function getNombreCliente(): ?string
+    {
+        return $this->nombreCliente;
+    }
+
     public $apellidoCliente;
+    public function getApellidoCliente(): ?string
+    {
+        return $this->apellidoCliente;
+    }
     public $direccionCliente;
+    public function getDireccionCliente(): ?string
+    {
+        return $this->direccionCliente;
+    }
+
 
     /**
      * @return Collection|Producto[]
@@ -218,4 +240,9 @@ class Pedido
 
         return $this;
     }
+
+
+
+
+
 }

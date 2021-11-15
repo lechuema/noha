@@ -1,7 +1,4 @@
-
-
 document.getElementById('Pedido_productos').addEventListener('change', updateValue);
-
 function updateValue() {
    precioPedido=0;
    comboProductos=document.getElementById('Pedido_productos-ts-control');
@@ -17,13 +14,10 @@ function updateValue() {
 
 document.getElementById('Pedido_cliente_autocomplete').addEventListener('change', buscarCliente);
 function buscarCliente(){
-  // var Ruta=Routing.generate('buscarCliente');
    comboCliente=document.getElementById('Pedido_cliente_autocomplete');
    var selectedOption = this.options[comboCliente.selectedIndex];
    console.log(selectedOption.value + ': ' + selectedOption.text);
-
    var parametros = {'id' : selectedOption.value};
-
    $.ajax({
       data: { 'id' :selectedOption.value  },
       url: 'buscarCliente',
@@ -36,7 +30,11 @@ function buscarCliente(){
          document.getElementById('Pedido_direccionCliente').value=data['direccionCliente'];
          },
       error: function(){
-         alert("Error petición ajax");
+         document.getElementById('Pedido_telefonoCliente').value='';
+         document.getElementById('Pedido_nombreCliente').value='';
+         document.getElementById('Pedido_apellidoCliente').value='';
+         document.getElementById('Pedido_mailCliente').value='';
+         document.getElementById('Pedido_direccionCliente').value='';
       }
    })
 }
