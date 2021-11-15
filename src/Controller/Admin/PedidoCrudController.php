@@ -16,6 +16,7 @@ use App\Entity\PeriodoEntrega;
 use App\Entity\Producto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -46,22 +47,26 @@ class PedidoCrudController extends AbstractCrudController
     }
 
 
+
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if(!$entityInstance->getCliente())
         {
-            $cli=new Cliente();
-            $cli->setTelefono($entityInstance->getTelefonoCliente());
-            $cli->setMail($entityInstance->getMailCliente());
-            $cli->setNombre($entityInstance->getNombreCliente());
-            $cli->setApellido($entityInstance->getApellidoCliente());
-            $cli->setDireccion($entityInstance->getDireccionCliente());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($cli);
-            $em->flush();
-            $entityInstance->setCliente($cli);
+                $cli = new Cliente();
+                $cli->setTelefono($entityInstance->getTelefonoCliente());
+                $cli->setMail($entityInstance->getMailCliente());
+                $cli->setNombre($entityInstance->getNombreCliente());
+                $cli->setApellido($entityInstance->getApellidoCliente());
+                $cli->setDireccion($entityInstance->getDireccionCliente());
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($cli);
+                $em->flush();
+                $entityInstance->setCliente($cli);
+                $entityInstance->setDireccionEntrega($cli->getDireccion());
+
         }
         parent::persistEntity($entityManager, $entityInstance);
+
     }
 
     public function createEntity(string $entityFqcn)
@@ -119,45 +124,11 @@ class PedidoCrudController extends AbstractCrudController
 
 
 
-    /*public static function getSubscribedEvents()
-    {
-        return [
-            BeforeEntityPersistedEvent::class => ['setCliente'],
-        ];
-    }
-
-    public function setCliente(BeforeEntityPersistedEvent $event)
-    {
-        $entity = $event->getEntityInstance();
-
-        if (!$entity->getCliente()) {
-            $cli=new Cliente();
-            $cli->setTelefono('121212');
-            $cli->setMail('em@em.com');
-            $entity->setCliente($cli);
-        }
-        /*if (!($entity instanceof Cliente)) {
-            $client=new Cliente();
-            $client->setApellido('hola');
-            $client->setNombre('nombre');
-            $client->setMail('mail@llkj.com');
-            $client->setTelefono(1212112);
-            $entity->setCliente($client);
-            return;
-        }
-
-        //$client = $entity->getCliente();
-       // if(!$client)
-        //{
-
-        //}
-
-    }*/
 
     public function configureFields(string $pageName): iterable
     {
-        $cliente = AssociationField::new('cliente')->autocomplete();
-        $productos = AssociationField::new('productos');
+        $cliente = AssociationField::new('cliente','Cliente')->autocomplete();
+        $productos = AssociationField::new('productos')->setColumns(6)->setRequired(true);
         $productosDetail = AssociationField::new('productos')->formatValue(function ($value, $entity) {
             $str = $entity->getProductos()[0];
             for ($i = 1; $i < $entity->getProductos()->count(); $i++) {
@@ -165,44 +136,39 @@ class PedidoCrudController extends AbstractCrudController
             }
             return $str;
         });
-        $observaciones = TextField::new('observaciones');
-        $precioTotal = NumberField::new('precioTotal');
-        $fechaEntrega = DateTimeField::new('fechaEntrega');
+        $observaciones = TextField::new('observaciones')->setColumns(4)->setRequired(false);;
+        $precioTotal = NumberField::new('precioTotal')->setColumns(2);
+        $fechaEntrega = DateTimeField::new('fechaEntrega')->setColumns(2);
         $fechaRealizacion = DateTimeField::new('fechaRealizacion')->setSortable(true)->setFormTypeOption('disabled', 'disabled');
-        $direccionEntrega = TextField::new('direccionEntrega');
-        $retira = BooleanField::new('retiraPorLocal');
-        $estadoPedido = AssociationField::new('estadoPedido');
-        //  $estadoPedido = AssociationField::new('estadoPedido')->setQueryBuilder(function($queryBuilder) {
-        //    $queryBuilder
-        //      ->andWhere('entity.id=1')
-        //;
-        //});
-        //$estadoPedidoNew=AssociationField::new('estadoPedido');
-        $nombreCliente = TextField::new('nombreCliente');
-        $apellidoCliente = TextField::new('apellidoCliente');
-        $direccionCliente = TextField::new('direccionCliente');
-        $telefonoCliente = TextField::new('telefonoCliente');
-        $mailCliente = TextField::new('mailCliente');
+        $retira = BooleanField::new('retiraPorLocal')->setColumns(2);
+        $estadoPedido = AssociationField::new('estadoPedido')->setColumns(4);
+        $nombreCliente = TextField::new('nombreCliente')->setColumns(4)->setRequired(true);;
+        $apellidoCliente = TextField::new('apellidoCliente')->setColumns(4)->setRequired(true);
+        $direccionCliente = TextField::new('direccionCliente')->setColumns(4)->setRequired(true);;
+        $telefonoCliente = TextField::new('telefonoCliente')->setColumns(6)->setRequired(true);;
+        $mailCliente = EmailField::new('mailCliente')->setColumns(6)->setRequired(true);;
+        $direccionEnvio=TextField::new('direccionEntrega')->setColumns(4);
 
         switch ($pageName) {
             case Crud::PAGE_INDEX:
             {
-                return [$cliente, $productos, $precioTotal, $estadoPedido, $retira, $fechaEntrega, $fechaRealizacion, $observaciones];
+                return [$cliente, $productos, $precioTotal, $estadoPedido, $retira, $fechaEntrega,$direccionEnvio, $fechaRealizacion, $observaciones];
                 break;
             }
             case Crud::PAGE_NEW:
             {
-                return [$cliente, $telefonoCliente, $nombreCliente, $apellidoCliente, $direccionCliente, $mailCliente, $productos, $precioTotal, $retira, $fechaEntrega, $observaciones, $estadoPedido];
+                return [
+                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $productos, $precioTotal, $retira, $fechaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
                 break;
             }
             case Crud::PAGE_EDIT:
             {
-                return [$cliente, $productos, $precioTotal, $estadoPedido, $retira, $fechaEntrega, $fechaRealizacion, $observaciones];
+                return [$cliente, $productos, $precioTotal, $estadoPedido,$direccionEnvio, $retira, $fechaEntrega, $fechaRealizacion, $observaciones];
                 break;
             }
             case Crud::PAGE_DETAIL:
             {
-                return [$cliente, $productosDetail, $precioTotal, $estadoPedido, $retira, $fechaEntrega, $fechaRealizacion, $observaciones];
+                return [$cliente, $productosDetail, $precioTotal, $estadoPedido, $retira,$direccionEnvio, $fechaEntrega, $fechaRealizacion, $observaciones];
                 break;
             }
         }
