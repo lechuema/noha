@@ -5,16 +5,19 @@ namespace App\Controller\Admin;
 use App\Entity\Pedido;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Builder\AssociationBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use App\Entity\Cliente;
 use App\Entity\EstadoPedido;
 use App\Entity\PeriodoEntrega;
 use App\Entity\Producto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
@@ -29,7 +32,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\Routing\Annotation\Route;
 
 class PedidoCrudController extends AbstractCrudController
 {
@@ -113,11 +116,24 @@ class PedidoCrudController extends AbstractCrudController
             ;
     }
 
+
+
+
+
     public function configureActions(Actions $actions): Actions
     {
+        $viewInvoice = Action::new('viewInvoice', 'Imprimir', 'fa fa-file-invoice')
+            ->linkToRoute('imprimirPedido', function (Pedido $pedido): array {
+                return [
+                    'id' => $pedido->getId(),
+                    'apellido'=>$pedido->getApellidoCliente(),
+                ];
+            });
+
         return $actions
             // ...
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_INDEX,$viewInvoice )
             ->add(Crud::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)
             ;
     }
@@ -163,7 +179,8 @@ class PedidoCrudController extends AbstractCrudController
             }
             case Crud::PAGE_EDIT:
             {
-                return [$cliente, $productos, $precioTotal, $estadoPedido,$direccionEnvio, $retira, $fechaEntrega, $fechaRealizacion, $observaciones];
+                return [
+                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $productos, $precioTotal, $retira, $fechaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
                 break;
             }
             case Crud::PAGE_DETAIL:

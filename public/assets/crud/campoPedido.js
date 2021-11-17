@@ -1,3 +1,26 @@
+document.getElementById('Pedido_mailCliente').addEventListener('change', verificarMail);
+function verificarMail() {
+   mail=document.getElementById('Pedido_mailCliente').value;
+   $.ajax({
+      data: { 'mail' :mail  },
+      url: 'verficarMail',
+      type: 'post',
+      success: function (data) {
+         if(data['resultado']=='EXISTE')
+         {
+            alert('El mail ingresado ya está asignado a otro cliente');
+            document.getElementById('Pedido_mailCliente').value='';
+         }
+
+      },
+      error: function(){
+         console.log('error');
+
+      }
+   })
+}
+
+
 document.getElementById('Pedido_direccionCliente').addEventListener('change', actualizarDireccionEntrega);
 function actualizarDireccionEntrega() {
    document.getElementById('Pedido_direccionEntrega').value=document.getElementById('Pedido_direccionCliente').value;
@@ -21,7 +44,6 @@ document.getElementById('Pedido_cliente_autocomplete').addEventListener('change'
 function buscarCliente(){
    comboCliente=document.getElementById('Pedido_cliente_autocomplete');
    var selectedOption = this.options[comboCliente.selectedIndex];
-   console.log(selectedOption.value + ': ' + selectedOption.text);
    var parametros = {'id' : selectedOption.value};
    $.ajax({
       data: { 'id' :selectedOption.value  },

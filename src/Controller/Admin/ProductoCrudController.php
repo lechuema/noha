@@ -24,7 +24,7 @@ class ProductoCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $observaciones = TextField::new('descripcion');
-        $precioActual =  NumberField::new('precioActual')->setFormTypeOption('disabled','disabled');
+        $precioActual =  NumberField::new('precioActual');
         
         switch ($pageName){
             case Crud::PAGE_INDEX:{
