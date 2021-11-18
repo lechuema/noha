@@ -34,9 +34,18 @@ class Producto
      */
     private $pedidos;
 
+    /**
+     * @ORM\OneToMany(targetEntity=DetallePedido::class, mappedBy="producto_id")
+     */
+    private $detallePedido;
+
+
+
     public function __construct()
     {
         $this->pedidos = new ArrayCollection();
+        $this->pedidoProducto = new ArrayCollection();
+        $this->detallePedido = new ArrayCollection();
     }
 
     public function __toString(){
@@ -99,4 +108,35 @@ class Producto
 
         return $this;
     }
+
+    /**
+     * @return Collection|DetallePedido[]
+     */
+    public function getDetallePedido(): Collection
+    {
+        return $this->detallePedido;
+    }
+
+    public function addDetallePedido(DetallePedido $detallePedido): self
+    {
+        if (!$this->detallePedido->contains($detallePedido)) {
+            $this->detallePedido[] = $detallePedido;
+            $detallePedido->setProductoId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetallePedido(DetallePedido $detallePedido): self
+    {
+        if ($this->detallePedido->removeElement($detallePedido)) {
+            // set the owning side to null (unless already changed)
+            if ($detallePedido->getProductoId() === $this) {
+                $detallePedido->setProductoId(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

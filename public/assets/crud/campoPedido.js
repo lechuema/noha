@@ -26,7 +26,7 @@ function actualizarDireccionEntrega() {
    document.getElementById('Pedido_direccionEntrega').value=document.getElementById('Pedido_direccionCliente').value;
 }
 
-document.getElementById('Pedido_productos').addEventListener('change', updateValue);
+/*document.getElementById('Pedido_productos').addEventListener('change', updateValue);
 function updateValue() {
    precioPedido=0;
    comboProductos=document.getElementById('Pedido_productos-ts-control');
@@ -37,7 +37,7 @@ function updateValue() {
    editPrecioTotal=document.getElementById('Pedido_precioTotal');
    editPrecioTotal.value="";
    editPrecioTotal.value=precioPedido;
-}
+}*/
 
 
 document.getElementById('Pedido_cliente_autocomplete').addEventListener('change', buscarCliente);

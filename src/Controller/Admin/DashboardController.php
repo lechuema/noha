@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Admin;
+use App\Entity\DetallePedido;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -41,6 +43,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linktoCrud('Combos', 'fa fa-lightbulb-o',Producto::class);
         yield MenuItem::linktoCrud('Horarios entrega', 'fa fa-cog fa-fw',PeriodoEntrega::class);
         yield MenuItem::linktoCrud('Estados de pedido', 'fa fa-cog fa-fw',EstadoPedido::class);
+        yield MenuItem::linktoCrud('Usuarios de sistema', 'fa fa-cog fa-fw',Admin::class);
 
         
     }

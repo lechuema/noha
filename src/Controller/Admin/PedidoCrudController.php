@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\DetallePedido;
 use App\Entity\Pedido;
+use App\Form\DetallePedidoType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Builder\AssociationBuilder;
@@ -162,9 +164,9 @@ class PedidoCrudController extends AbstractCrudController
         $apellidoCliente = TextField::new('apellidoCliente')->setColumns(4)->setRequired(true);
         $direccionCliente = TextField::new('direccionCliente')->setColumns(4)->setRequired(true);;
         $telefonoCliente = TextField::new('telefonoCliente')->setColumns(6)->setRequired(true);;
-        $mailCliente = EmailField::new('mailCliente')->setColumns(6)->setRequired(true);;
+        $mailCliente = EmailField::new('mailCliente')->setColumns(6)->setRequired(true);
         $direccionEnvio=TextField::new('direccionEntrega')->setColumns(4);
-
+        $detalle=CollectionField::new('detallePedido')->setEntryType(DetallePedidoType::class)->setColumns(12)->setRequired(true);;
         switch ($pageName) {
             case Crud::PAGE_INDEX:
             {
@@ -174,7 +176,7 @@ class PedidoCrudController extends AbstractCrudController
             case Crud::PAGE_NEW:
             {
                 return [
-                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $productos, $precioTotal, $retira, $fechaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
+                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $detalle, $precioTotal, $retira, $fechaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
                 break;
             }
             case Crud::PAGE_EDIT:

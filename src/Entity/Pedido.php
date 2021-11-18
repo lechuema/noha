@@ -72,6 +72,8 @@ class Pedido
     public function __construct()
     {
         $this->productos = new ArrayCollection();
+        $this->pedido_producto = new ArrayCollection();
+        $this->detallePedido = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -187,6 +189,13 @@ class Pedido
         return $this->apellidoCliente;
     }
     public $direccionCliente;
+
+    /**
+     * @ORM\OneToMany(targetEntity=DetallePedido::class, mappedBy="pedido_id")
+     */
+    private $detallePedido;
+
+
     public function getDireccionCliente(): ?string
     {
         return $this->direccionCliente;
@@ -241,6 +250,41 @@ class Pedido
         return $this;
     }
 
+    /**
+     * @return Collection|DetallePedido[]
+     */
+    public function getDetallePedido(): Collection
+    {
+        return $this->detallePedido;
+    }
+
+    public function addDetallePedido(DetallePedido $detallePedido): self
+    {
+        if (!$this->detallePedido->contains($detallePedido)) {
+            $this->detallePedido[] = $detallePedido;
+            $detallePedido->setPedidoId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDetallePedido(DetallePedido $detallePedido): self
+    {
+        if ($this->detallePedido->removeElement($detallePedido)) {
+            // set the owning side to null (unless already changed)
+            if ($detallePedido->getPedidoId() === $this) {
+                $detallePedido->setPedidoId(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+
+
+    
 
 
 
