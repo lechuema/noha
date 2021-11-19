@@ -52,7 +52,6 @@ class PedidoCrudController extends AbstractCrudController
     }
 
 
-
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if(!$entityInstance->getCliente())
@@ -70,6 +69,7 @@ class PedidoCrudController extends AbstractCrudController
                 $entityInstance->setDireccionEntrega($cli->getDireccion());
 
         }
+
         parent::persistEntity($entityManager, $entityInstance);
 
     }
@@ -97,8 +97,6 @@ class PedidoCrudController extends AbstractCrudController
     {
 
         return $assets
-
-            //->addJsFile('assets/crud/campoPedido.js');
             ->addJsFile(Asset::new('assets/crud/campoPedido.js')->defer())
             ->addJsFile(Asset::new('bundles/fosjsrouting/js/router.min.js')->defer())
             ->addJsFile(Asset::new('https://code.jquery.com/jquery-3.2.1.min.js')->defer());
@@ -147,13 +145,13 @@ class PedidoCrudController extends AbstractCrudController
     {
         $cliente = AssociationField::new('cliente','Cliente')->autocomplete();
         $productos = AssociationField::new('productos')->setColumns(6)->setRequired(true);
-        $productosDetail = AssociationField::new('productos')->formatValue(function ($value, $entity) {
+        /*$productosDetail = AssociationField::new('productos')->formatValue(function ($value, $entity) {
             $str = $entity->getProductos()[0];
             for ($i = 1; $i < $entity->getProductos()->count(); $i++) {
                 $str = $str . ", " . $entity->getProductos()[$i];
             }
             return $str;
-        });
+        });*/
         $observaciones = TextField::new('observaciones')->setColumns(4)->setRequired(false);;
         $precioTotal = NumberField::new('precioTotal')->setColumns(2);
         $fechaEntrega = DateTimeField::new('fechaEntrega')->setColumns(2);
@@ -166,7 +164,7 @@ class PedidoCrudController extends AbstractCrudController
         $telefonoCliente = TextField::new('telefonoCliente')->setColumns(6)->setRequired(true);;
         $mailCliente = EmailField::new('mailCliente')->setColumns(6)->setRequired(true);
         $direccionEnvio=TextField::new('direccionEntrega')->setColumns(4);
-        $detalle=CollectionField::new('detallePedido')->setEntryType(DetallePedidoType::class)->setColumns(12)->setRequired(true);;
+        $detalle=CollectionField::new('detallePedido')->setEntryType(DetallePedidoType::class)->setColumns(12)->setRequired(true);
         switch ($pageName) {
             case Crud::PAGE_INDEX:
             {
@@ -182,12 +180,12 @@ class PedidoCrudController extends AbstractCrudController
             case Crud::PAGE_EDIT:
             {
                 return [
-                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $productos, $precioTotal, $retira, $fechaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
+                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $detalle, $precioTotal, $retira, $fechaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
                 break;
             }
             case Crud::PAGE_DETAIL:
             {
-                return [$cliente, $productosDetail, $precioTotal, $estadoPedido, $retira,$direccionEnvio, $fechaEntrega, $fechaRealizacion, $observaciones];
+                return [$cliente, $detalle, $precioTotal, $estadoPedido, $retira,$direccionEnvio, $fechaEntrega, $fechaRealizacion, $observaciones];
                 break;
             }
         }

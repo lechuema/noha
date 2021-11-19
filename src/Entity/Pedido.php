@@ -191,7 +191,7 @@ class Pedido
     public $direccionCliente;
 
     /**
-     * @ORM\OneToMany(targetEntity=DetallePedido::class, mappedBy="pedido_id")
+     * @ORM\OneToMany(targetEntity=DetallePedido::class, mappedBy="pedido_id",cascade={"persist"})
      */
     private $detallePedido;
 
