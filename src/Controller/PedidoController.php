@@ -90,11 +90,12 @@ class PedidoController extends AbstractController
      */
     public function imprimirPedido(Pedido $context)
     {
-        $resultado = $context->getPrecioTotal();
-        /* $resultado = $context->getPrecioTotal();
-        return $this->render('pedido/index.html.twig', [
-            'resultado' => $resultado,
-        ]);*/
+
+       /* foreach ($context->getDetallePedido() as $item) {
+            dump($item);
+        }
+        die;*/
+
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
@@ -102,14 +103,16 @@ class PedidoController extends AbstractController
         // Instantiate Dompdf with our options
         $dompdf = new Dompdf($pdfOptions);
 
+
+
         // Retrieve the HTML generated in our twig file
         $html = $this->renderView('pedido/index.html.twig', [
-            'productos'=>$context->getProductos(),
+            'detalle'=>$context->getDetallePedido(),
             'precioTotal' => $context->getPrecioTotal(),
             'nombre'=>$context->getCliente()->getNombre(),
             'apellido'=>$context->getCliente()->getApellido(),
             'domicilio'=>$context->getDireccionEntrega(),
-            //'fechaEntrega'=>$context->getFechaEntrega()
+            'fechaEntrega'=>$context->getFechaEntrega(),
         ]);
 
         // Load HTML to Dompdf

@@ -9,28 +9,30 @@
 </style>
 
 <div class="example-wrapper">
-    <h3>Detalle del pedido de {{ apellido}}, {{  nombre }}</h3>
-    <h3>Productos</h3>
+    <h3>Cliente: {{ apellido}}, {{  nombre }}</h3>
+    <h3>Detalle del pedido</h3>
     <ul>
-        {% for producto in productos %}
-            <li>{{ producto.descripcion }}</li>
+        {% for linea in detalle %}
+            <li>{{ linea }}</li>
         {% endfor %}
     </ul>
-    <h4>Domicilio de entrega: {{ domicilio }}</h4>
-    <h4>Precio Total$: {{ precioTotal }}</h4>
+    <h3>Precio Total: ${{ precioTotal }}</h3>
+    <h3>Domicilio de entrega: {{ domicilio }}</h3>
+
 </div>
     <hr style="border:1px dotted black;" />
-    <div class="example-wrapper">
-        <h2>Detalle del pedido de {{ apellido}}, {{  nombre }}</h2>
-        <h3>Productos</h3>
-        <ul>
-            {% for producto in productos %}
-                <li>{{ producto.descripcion }}</li>
-            {% endfor %}
-        </ul>
-        <h3>Domicilio de entrega: {{ domicilio }}</h3>
-        <h3>Precio Total$: {{ precioTotal }}</h3>
-    </div>
+<div class="example-wrapper">
+    <h3>Cliente: {{ apellido}}, {{  nombre }}</h3>
+    <h3>Detalle del pedido</h3>
+    <ul>
+        {% for linea in detalle %}
+            <li>{{ linea }}</li>
+        {% endfor %}
+    </ul>
+    <h3>Precio Total: ${{ precioTotal }}</h3>
+    <h3>Domicilio de entrega: {{ domicilio }}</h3>
 
 
-{% endblock %}
+
+
+    {% endblock %}
