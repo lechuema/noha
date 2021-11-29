@@ -106,6 +106,7 @@ class PedidoController extends AbstractController
 
 
         // Retrieve the HTML generated in our twig file
+
         $html = $this->renderView('pedido/index.html.twig', [
             'detalle'=>$context->getDetallePedido(),
             'precioTotal' => $context->getPrecioTotal(),
@@ -113,6 +114,7 @@ class PedidoController extends AbstractController
             'apellido'=>$context->getCliente()->getApellido(),
             'domicilio'=>$context->getDireccionEntrega(),
             'fechaEntrega'=>$context->getFechaEntrega(),
+            'telefonoCliente'=>$context->getCliente()->getTelefono(),
         ]);
 
         // Load HTML to Dompdf

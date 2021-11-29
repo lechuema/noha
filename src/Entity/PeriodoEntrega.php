@@ -40,7 +40,7 @@ class PeriodoEntrega
     }
 
     public function __toString(){
-        return $this->horaDesde.''.$this->horaHasta;
+        return 'Desde '.$this->horaDesde.' hasta '.$this->horaHasta;
     }
 
     public function getId(): ?int

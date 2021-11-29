@@ -39,6 +39,16 @@ class Producto
      */
     private $detallePedido;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $color;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $simbolo;
+
 
 
     public function __construct()
@@ -49,7 +59,7 @@ class Producto
     }
 
     public function __toString(){
-        return $this->descripcion.'|'.$this->precioActual;
+        return $this->getSimbolo().'|'.$this->descripcion.'|'.$this->precioActual;
     }
 
 
@@ -135,6 +145,30 @@ class Producto
                 $detallePedido->setProductoId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function getSimbolo(): ?string
+    {
+        return $this->simbolo;
+    }
+
+    public function setSimbolo(?string $simbolo): self
+    {
+        $this->simbolo = $simbolo;
 
         return $this;
     }

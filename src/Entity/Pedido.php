@@ -30,7 +30,7 @@ class Pedido
     private $fechaRealizacion;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
     private $fechaEntrega;
 
@@ -45,7 +45,7 @@ class Pedido
     private $retiraPorLocal;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text",nullable=true)
      */
     private $observaciones;
 
@@ -191,7 +191,7 @@ class Pedido
     public $direccionCliente;
 
     /**
-     * @ORM\OneToMany(targetEntity=DetallePedido::class, mappedBy="pedido_id",cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=DetallePedido::class, mappedBy="pedido_id",cascade={"persist","remove"})
      */
     private $detallePedido;
 

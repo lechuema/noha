@@ -34,8 +34,8 @@ class DetallePedido
     private $producto_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Pedido::class, inversedBy="detallePedido")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Pedido::class, inversedBy="detallePedido",cascade={"persist","remove"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $pedido_id;
 
@@ -93,6 +93,6 @@ class DetallePedido
     }
 
     public function __toString(){
-        return $this->getProductoId()->getDescripcion().' - Cantidad:'.$this->getCantidad().' - PrecioParcial $'.$this->getPrecioVenta() ;
+        return $this->getProductoId()->getSimbolo().' - '.$this->getProductoId()->getDescripcion().' - Cantidad:'.$this->getCantidad().' - PrecioParcial $'.$this->getPrecioVenta() ;
     }
 }

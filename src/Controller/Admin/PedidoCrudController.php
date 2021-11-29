@@ -51,6 +51,31 @@ class PedidoCrudController extends AbstractCrudController
         return $em->getRepository(EstadoPedido::class)->find(1);
     }
 
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $precioTotal=0;
+        foreach ($entityInstance->getDetallePedido() as $linea)
+        {
+            $precioLinea=$linea->getProductoId()->getPrecioActual() * $linea->getCantidad();
+            $precioTotal=$precioTotal+$precioLinea;
+            $linea->setPrecioVenta($precioLinea);
+
+        }
+        $entityInstance->setPrecioTotal($precioTotal);
+        $em = $this->getDoctrine()->getManager();
+        $detallesABorrar=$em->getRepository(DetallePedido::class)->findBy(['id'=>$entityInstance->getId()]);
+        foreach($detallesABorrar as $detalle)
+        {
+                $em->remove($detalle);
+        }
+
+
+        $em->persist($entityInstance);
+        $em->flush();
+
+
+    }
+
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
@@ -87,8 +112,9 @@ class PedidoCrudController extends AbstractCrudController
     public function createEntity(string $entityFqcn)
     {
         $pedido = new Pedido();
-        $pedido->setFechaRealizacion(new \DateTime());
-        $pedido->setFechaEntrega(new \DateTime());
+        $fecha=new \DateTime();
+        $pedido->setFechaRealizacion($fecha);
+        $pedido->setFechaEntrega($fecha);
         $estado=$this->getEstadoPedidoPendiente();
         $pedido->setEstadoPedido($estado);
         return $pedido;
@@ -99,6 +125,8 @@ class PedidoCrudController extends AbstractCrudController
        return $filters
            ->add(EntityFilter::new('cliente'))
            ->add(EntityFilter::new('estadoPedido'))
+           ->add('fechaEntrega')
+
        ;
     }
 
@@ -127,12 +155,20 @@ class PedidoCrudController extends AbstractCrudController
     }
 
 
-
+    public function armarPedidoParaMensaje(Pedido $pedido):string
+    {
+        $detalle='';
+        foreach ($pedido->getDetallePedido() as $linea)
+        {
+            $detalle = $detalle.' '.$linea->getProductoId()->getDescripcion().' - Cantidad: '.$linea->getCantidad().' - Precio parcial:$'.$linea->getPrecioVenta().' - ';
+        }
+        return $detalle;
+    }
 
 
     public function configureActions(Actions $actions): Actions
     {
-        $viewInvoice = Action::new('viewInvoice', 'Imprimir')
+        $imprimirOrden = Action::new('viewInvoice', 'Imprimir')
             ->linkToRoute('imprimirPedido', function (Pedido $pedido): array {
                 return [
                     'id' => $pedido->getId(),
@@ -140,10 +176,20 @@ class PedidoCrudController extends AbstractCrudController
                 ];
             });
 
+        $enviarOrden = Action::new('enviarOrden', 'Enviar orden')
+            ->setHtmlAttributes(['target' => '_blank'])
+            ->linkToUrl(function (Pedido $entity) {
+                $pedido=$this->armarPedidoParaMensaje($entity);
+                return 'https://api.whatsapp.com/send?phone='.$entity->getCliente()->getTelefono().'&text= '.'Estimado/a '.$entity->getCliente()->getNombre() .', te enviamos la confirmación de tu pedido: '.$pedido.'  - Se entrega en: '.$entity->getDireccionEntrega().', el día: '.$entity->getFechaEntrega()->format('Y-m-d').' - Costo total:$'.$entity->getPrecioTotal().'. Gracias por confiar en NOHA!';
+            });
+
         return $actions
             // ...
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->add(Crud::PAGE_INDEX,$viewInvoice )
+            ->add(Crud::PAGE_INDEX,$imprimirOrden )
+            ->add(Crud::PAGE_INDEX,$enviarOrden )
+
+
             ->add(Crud::PAGE_EDIT, Action::SAVE_AND_ADD_ANOTHER)
             ;
     }
@@ -153,49 +199,42 @@ class PedidoCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $cliente = AssociationField::new('cliente','Cliente')->autocomplete();
-        $productos = AssociationField::new('productos')->setColumns(6)->setRequired(true);
-        /*$productosDetail = AssociationField::new('productos')->formatValue(function ($value, $entity) {
-            $str = $entity->getProductos()[0];
-            for ($i = 1; $i < $entity->getProductos()->count(); $i++) {
-                $str = $str . ", " . $entity->getProductos()[$i];
-            }
-            return $str;
-        });*/
-        $observaciones = TextField::new('observaciones')->setColumns(2)->setRequired(false);;
+        $cliente = AssociationField::new('cliente','Cliente')->autocomplete()->setSortable(false);
+        $observaciones = TextField::new('observaciones')->setColumns(9)->setRequired(false);;
         $precioTotal = NumberField::new('precioTotal')->setColumns(2);
-        $fechaEntrega = DateTimeField::new('fechaEntrega')->setColumns(2);
+        $fechaEntrega = DateTimeField::new('fechaEntrega')->setColumns(3);
         $fechaRealizacion = DateTimeField::new('fechaRealizacion')->setSortable(true)->setFormTypeOption('disabled', 'disabled');
-        $retira = BooleanField::new('retiraPorLocal')->setColumns(2);
-        $estadoPedido = AssociationField::new('estadoPedido')->setColumns(2);
+        $retira = BooleanField::new('retiraPorLocal')->setColumns(3)->setSortable(false);
+        $estadoPedido = AssociationField::new('estadoPedido')->setColumns(3)->setSortable(false);
         $nombreCliente = TextField::new('nombreCliente')->setColumns(4)->setRequired(true);;
         $apellidoCliente = TextField::new('apellidoCliente')->setColumns(4)->setRequired(true);
-        $direccionCliente = TextField::new('direccionCliente')->setColumns(4)->setRequired(true);;
-        $telefonoCliente = TextField::new('telefonoCliente')->setColumns(6)->setRequired(true);;
+        $direccionCliente = TextField::new('direccionCliente')->setColumns(4)->setRequired(true);
+        $telefonoCliente = TextField::new('telefonoCliente')->setColumns(6)->setRequired(true);
         $mailCliente = EmailField::new('mailCliente')->setColumns(6)->setRequired(true);
-        $direccionEnvio=TextField::new('direccionEntrega')->setColumns(2);
-        $detalle=CollectionField::new('detallePedido')->setEntryType(DetallePedidoType::class)->setRequired(true)->setColumns(12)->addJsFiles('assets/crud/detalle.js');;
+        $direccionEnvio=TextField::new('direccionEntrega')->setColumns(3);
+        $detalle=CollectionField::new('detallePedido')->setEntryType(DetallePedidoType::class)->setRequired(true)->setColumns(12)->addJsFiles('assets/crud/detalle.js');
+        $horaEntrega=AssociationField::new('periodoEntrega')->setColumns(3);
         switch ($pageName) {
             case Crud::PAGE_INDEX:
             {
-                return [$cliente, $precioTotal, $estadoPedido, $retira, $fechaEntrega,$direccionEnvio, $fechaRealizacion, $observaciones];
+                return [$cliente, $precioTotal, $estadoPedido, $retira, $fechaEntrega,$direccionEnvio, $observaciones];
                 break;
             }
             case Crud::PAGE_NEW:
             {
                 return [
-                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $detalle, $retira, $fechaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
+                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $detalle, $retira, $fechaEntrega,$horaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
                 break;
             }
             case Crud::PAGE_EDIT:
             {
                 return [
-                    $cliente, FormField::addPanel('Datos de cliente'),$telefonoCliente, $mailCliente, $nombreCliente, $apellidoCliente, $direccionCliente,FormField::addPanel('Datos de pedido'), $detalle, $precioTotal, $retira, $fechaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
+                    $cliente,FormField::addPanel('Datos de pedido'), $detalle, $retira, $fechaEntrega,$horaEntrega,$direccionEnvio, $observaciones, $estadoPedido];
                 break;
             }
             case Crud::PAGE_DETAIL:
             {
-                return [$cliente, $detalle, $precioTotal, $estadoPedido, $retira,$direccionEnvio, $fechaEntrega, $fechaRealizacion, $observaciones];
+                return [FormField::addPanel('Datos de cliente'),$cliente,FormField::addPanel('Datos de pedido'), $detalle, $precioTotal, $retira,$fechaEntrega,$direccionEnvio, $estadoPedido,$horaEntrega,  $fechaRealizacion, $observaciones];
                 break;
             }
         }
