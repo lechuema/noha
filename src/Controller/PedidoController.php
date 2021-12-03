@@ -115,6 +115,7 @@ class PedidoController extends AbstractController
             'domicilio'=>$context->getDireccionEntrega(),
             'fechaEntrega'=>$context->getFechaEntrega(),
             'telefonoCliente'=>$context->getCliente()->getTelefono(),
+            'horaEntrega'=>$context->getPeriodoEntrega(),
         ]);
 
         // Load HTML to Dompdf

@@ -93,6 +93,6 @@ class DetallePedido
     }
 
     public function __toString(){
-        return $this->getProductoId()->getSimbolo().' - '.$this->getProductoId()->getDescripcion().' - Cantidad:'.$this->getCantidad().' - PrecioParcial $'.$this->getPrecioVenta() ;
+        return $this->getProductoId()->getDescripcion().' - Cantidad:'.$this->getCantidad().' - PrecioParcial $'.$this->getPrecioVenta() ;
     }
 }

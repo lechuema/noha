@@ -180,7 +180,7 @@ class PedidoCrudController extends AbstractCrudController
             ->setHtmlAttributes(['target' => '_blank'])
             ->linkToUrl(function (Pedido $entity) {
                 $pedido=$this->armarPedidoParaMensaje($entity);
-                return 'https://api.whatsapp.com/send?phone='.$entity->getCliente()->getTelefono().'&text= '.'Estimado/a '.$entity->getCliente()->getNombre() .', te enviamos la confirmación de tu pedido: '.$pedido.'  - Se entrega en: '.$entity->getDireccionEntrega().', el día: '.$entity->getFechaEntrega()->format('Y-m-d').' - Costo total:$'.$entity->getPrecioTotal().'. Gracias por confiar en NOHA!';
+                return 'https://api.whatsapp.com/send?phone='.$entity->getCliente()->getTelefono().'&text= '.'Estimado/a '.$entity->getCliente()->getNombre() .', te enviamos la confirmación de tu pedido: '.$pedido.'  - Se entrega en: '.$entity->getDireccionEntrega().', el día: '.$entity->getFechaEntrega()->format('Y-m-d').' - Costo total:$'.$entity->getPrecioTotal().'. Hora entrega: '.$entity->getPeriodoEntrega().'. Gracias por confiar en NOHA!';
             });
 
         return $actions
